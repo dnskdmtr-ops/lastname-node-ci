@@ -1,0 +1,39 @@
+name: Node.js CI  # назва робочого процесу
+
+# Запускати процес після кожного push у гілку main
+on:
+  push:
+    branches:
+      - main
+
+# Опис завдань
+jobs:
+  build:
+    runs-on: ubuntu-latest  # використовувати віртуальний сервер Ubuntu
+
+    # Послідовність кроків виконання
+    steps:
+      # Завантажити код репозиторію
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Установити Node.js версії 20
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # Установити залежності проекту
+      - name: install dependencies
+        run: npm install
+
+      # Запустити процес збірки з package.json
+      - name: Build project
+        run: npm run build
+        
+      # Зберегти папку dist  як артефакт
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: node-build  # назва артефакту, який можна завантажити
+          path: dist/  # папка з результатами збірки
